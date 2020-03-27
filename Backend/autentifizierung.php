@@ -10,7 +10,7 @@ class Autentifizierung{
         $res = $con->query($sql);
         if($res && $res->row_count > 3){
                 $this->insertLogInfo($con, false);
-            return false;
+            return false ;
         }
         $this->insertLogInfo($con, true);
         return true;
@@ -25,12 +25,13 @@ class Autentifizierung{
     function matchPublicKey($con, $publickey){
         $publickey = htmlspecialchars($publickey);
         $publickey = $con->real_escape_string($publickey);
-        $sql = 'SELECT id FROM publickeys WHERE publickey = ' . $publickey . ';';
+        $sql = 'SELECT id FROM user WHERE publickey = ' . $publickey . ';';
         $res = $con->query($sql);
         if($res->num_rows == 1){
-            return true;
+            $row = $res->fetch_assoc();
+            return $row['id'];
         }
-        return false;
+        return null;
     }
 
     function getClientInfo(){

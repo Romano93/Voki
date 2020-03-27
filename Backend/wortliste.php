@@ -8,10 +8,11 @@
 
         $aut = new Autentifizierung();
 
-        if($aut->handelLoginTrys($con) && isset($_GET['k'])){
-            if($aut->matchPublicKey($con, $_GET['k']))
+        if($aut->handelLoginTrys($con) && isset($_POST['k'])){
+            $userid = $aut->matchPublicKey($con, $_POST['k']);
+            if($userid != null)
             {
-                $sql = 'SELECT begriff, beschreibung, link FROM wortliste;';
+                $sql = 'SELECT wortliste.begriff, wortliste.beschreibung, wortliste.link FROM wortliste JOIN userwortlisten ON wortliste.wortlistendefinitionId = userwortlisten.wortlisteId WHERE userId = ' . $userid . ';';
                 $res = $con->query($sql);
                 if ($res->num_rows > 0)
                 {
