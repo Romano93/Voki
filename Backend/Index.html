@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <title>Testing</title>
+  </head>
+  <body> 
+    <form action="controller.php" method="POST">
+      <label for="begriff">begriff</label>
+      <input type="text" id="begriff" name="begriff"><br><br>
+      <label for="beschreibung">beschreibung</label>
+      <input type="text" id="beschreibung" name="beschreibung"><br><br>
+      <label for="link">link</label>
+      <input type="text" id="link" name="link"><br><br>
+      <label for="k">public key:</label>
+      <input type="text" id="k" name="k"><br><br>
+      <label for="k">wortlisteId:</label>
+      <input type="text" id="wortlisteId" name="wortlisteId"><br><br>
+      <input type="text" id="task" name="task" hidden value="newWord">
+      <input type="submit" value="Submit">
+    </form> 
+    
+    <form action="controller.php" method="POST">
+      <label for="k">public key:</label>
+      <input type="text" id="k" name="k"><br><br>
+      <input type="text" id="task" name="task" hidden value="allWords">
+      <input type="submit" value="Submit">
+    </form> 
+  </body>
+</html>
