@@ -29,8 +29,10 @@ class Autentifizierung{
         $res = $con->query($sql);
         if($res->num_rows == 1){
             $row = $res->fetch_assoc();
+            insertLogInfo($con, true)
             return $row['id'];
         }
+        insertLogInfo($con, false)
         return null;
     }
 
