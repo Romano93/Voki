@@ -2,7 +2,12 @@
     "name": "Voki",
     "version": "1.0",
     "description": "a personal browser voki",
-    "permissions": ["declarativeContent", "storage"],
+    "permissions": [
+      "declarativeContent", 
+      "storage",
+      "http://localhost/Voki",
+      "https://localhost/Voki"
+    ],
     "background": {
         "scripts": ["background.js"],
         "persistent": false
