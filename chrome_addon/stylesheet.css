@@ -1,7 +1,42 @@
 body {
     width:300px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
 }
 
-#buttons{
-    float: right;
+#table{
+    padding-top: 20px;
+}
+
+.begriffcontainer{
+    border: 1px solid gray;
+    margin-bottom: 2px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.begriff{
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.begriff{
+    margin: 0px;
+}
+
+.beschreibung{
+    margin: 0px;
+}
+
+.linkempty, .link{
+    margin: 0px;
+}
+
+#searchtext{    
+    width: 270px;
+}
+
+#refreshBtn{
+    width: 15px;
+    padding-top: 2px;
 }
