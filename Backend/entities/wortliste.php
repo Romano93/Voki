@@ -11,7 +11,7 @@ class Wortliste{
         $wortlisteId = $con->real_escape_string(htmlspecialchars($_POST['wortlisteId']));
         if(isOwner($con, $ownerId, $wortlisteId)){
             $mail = $con->real_escape_string(htmlspecialchars($_POST['sharemail']));
-            $sql = 'SELECT id FROM user WHERE mail = '. $mail .';'
+            $sql = 'SELECT id FROM user WHERE mail = '. $mail .';';
             $res = $con->query($sql);
             if($res->num_rows == 1){
                 $row = $res->fetchassoc();
@@ -33,7 +33,7 @@ class Wortliste{
 
     function getWortlistenFromUser($con, $userId){
         $array = null;
-        $sql = 'SELECT name, beschreibung FROM wortlisten WHERE ownerId = ' . $userId . ';';
+        $sql = 'SELECT id, name, beschreibung FROM wortlisten WHERE ownerId = ' . $userId . ';';
         $res = $con->query($sql);
         if($res->num_rows >= 1){
             while($row = $res->fetch_assoc()) {

@@ -2,11 +2,11 @@
     include_once('connection/connection.php');
     $db = new DbConnection();
     $con = $db->getConnection();
-    
+
     if($con){
         include_once('tools/autentifizierung.php');
         $aut = new Autentifizierung();
-
+        
         if($aut->handelLoginTrys($con) && isset($_POST['k']) && isset($_POST['task'])){
             $userid = $aut->matchPublicKey($con, $_POST['k']);
             if($userid != null)
@@ -17,16 +17,21 @@
                 include_once('entities/begriff.php');
                 $Begriff = new Begriff();
 
-                include_once('entities/wortliste.php')
+                include_once('entities/wortliste.php');
                 $Wortliste = new Wortliste();
 
                 switch($task){              
                     case "allWords":
                         echo json_encode($Begriff->getAllBegriffe($con, $userid));
                     break;
-                    case "newWord":
-                        if(isset($_POST['begriff']) && isset($_POST['beschreibung']) && isset($_POST['wortlisteId'])){                            
+                    case "newWord":                        
+                        if(isset($_POST['begriff']) && isset($_POST['beschreibung']) && isset($_POST['wortlisteId'])){
                             $Begriff->neuerBegriff($con);
+                        }
+                    break;                    
+                    case "editWord":
+                        if(isset($_POST['begriff']) && isset($_POST['beschreibung']) && isset($_POST['wortlisteId']) && isset($_POST['begriffId'])){                
+                            $Begriff->editBegriff($con);
                         }
                     break;
                     case "allDef":
@@ -38,7 +43,7 @@
                         }
                     break;
                     case "shareDef":
-                        if(isset($_POST['sharemail']) && isset($_POST['wortlisteId']){
+                        if(isset($_POST['sharemail']) && isset($_POST['wortlisteId'])){
                             $Wortliste->shareWortliste();
                         }
                     break;
