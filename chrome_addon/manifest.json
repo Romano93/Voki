@@ -1,6 +1,6 @@
 {
     "name": "Voki",
-    "version": "1.0",
+    "version": "0.8.0",
     "description": "a personal browser voki",
     "permissions": [
       "declarativeContent", 
@@ -20,6 +20,11 @@
             "48": "images/info48.png",
             "128": "images/info128.png"
           }
+      },
+      "options_page": "options.html",
+      "options_ui": {
+        "page": "options.html",
+        "open_in_tab": false
       },
       "icons": {
         "16": "images/info16.png",

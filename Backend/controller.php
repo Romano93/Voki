@@ -20,9 +20,14 @@
                 include_once('entities/wortliste.php');
                 $Wortliste = new Wortliste();
 
-                switch($task){              
+                switch($task){
                     case "allWords":
                         echo json_encode($Begriff->getAllBegriffe($con, $userid));
+                    break;                    
+                    case "selectedWords":
+                        if(isset($_POST['wortlisteId'])){
+                            echo json_encode($Begriff->getBegriffe($con, $userid));
+                        }
                     break;
                     case "newWord":                        
                         if(isset($_POST['begriff']) && isset($_POST['beschreibung']) && isset($_POST['wortlisteId'])){

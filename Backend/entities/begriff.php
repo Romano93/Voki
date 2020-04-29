@@ -42,8 +42,9 @@ class Begriff{
         return $array;
     }
 
-    function getBegriffe($con, $userid, $begriffeId){
-        $sql = 'SELECT begriffe.id, begriffe.wortlisteId, begriffe.begriff, begriffe.beschreibung, begriffe.link FROM begriffe JOIN userwortlisten ON begriffe.wortlisteId = userwortlisten.wortlisteId WHERE userwortlisten.userId = ' . $userid . ' AND begriffe.id = '. $begriffeId .';';
+    function getBegriffe($con, $userid){
+        $wortlisteId = $con->real_escape_string(htmlspecialchars($_POST['wortlisteId']));
+        $sql = 'SELECT begriffe.id, begriffe.wortlisteId, begriffe.begriff, begriffe.beschreibung, begriffe.link FROM begriffe JOIN userwortlisten ON begriffe.wortlisteId = userwortlisten.wortlisteId WHERE userwortlisten.userId = ' . $userid . ' AND userwortlisten.wortlisteId = '. $wortlisteId .';';
         $res = $con->query($sql);
         $array = null;
         if ($res->num_rows > 0)
