@@ -8,15 +8,16 @@ class Autentifizierung{
         $date = date("Y-m-d H:i:s", $time);
         $sql = 'SELECT id FROM log WHERE time > ' . $date . ' AND ip = ' . $this->getIpAddress() .' AND success = 0';
         $res = $con->query($sql);
-        if($res && $res->row_count > 3){
-                $this->insertLogInfo($con, false);
+        if($res && $res->row_count > 5){
             return false ;
         }
-        $this->insertLogInfo($con, true);
         return true;
     }
 
     function insertLogInfo($con, $success){
+        if(empty($success)){ // leer == false
+            $success = 0;
+        }
         $date = date("Y-m-d H:i:s");
         $sql = "INSERT INTO log (ip, time, information, success) VALUES ('". $this->getIpAddress() ."', '". $date . "', '". $con->real_escape_string($this->getClientInfo()) ."', ". $success .");";
         return $con->query($sql);
@@ -29,8 +30,10 @@ class Autentifizierung{
         $res = $con->query($sql);
         if($res->num_rows == 1){
             $row = $res->fetch_assoc();
+            $this->insertLogInfo($con, true);
             return $row['id'];
-        }
+        }        
+        $this->insertLogInfo($con, false);
         return null;
     }
 

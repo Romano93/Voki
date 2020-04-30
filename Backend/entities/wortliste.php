@@ -31,6 +31,15 @@ class Wortliste{
         return false;
     }
 
+    function accessAllowed($con, $userId, $wortlisteId){
+        $sql = 'SELECT id FROM userwortlisten WHERE userId = ' . $userId.' AND wortlisteId = '. $wortlisteId .'';
+        $res = $con->query($sql);
+        if($res->num_rows > 0){
+            return true;
+        }
+        return false;
+    }
+
     function getWortlistenFromUser($con, $userId){
         $array = null;
         $sql = 'SELECT id, name, beschreibung FROM wortlisten WHERE ownerId = ' . $userId . ';';

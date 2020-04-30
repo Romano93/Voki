@@ -20,6 +20,7 @@ function restoreLocalData(){
                 document.getElementById('table').innerHTML += itemcollection;
                 setLinksClickable();
                 enableEditBtn();
+                enableDelBtn();
             }
         }
     });
@@ -36,6 +37,7 @@ function restoreLocalData(){
                 document.getElementById('table').innerHTML += itemcollection;
                 setLinksClickable();
                 enableEditBtn();
+                enableDelBtn();
             }
         }
     });
@@ -85,19 +87,21 @@ function resetWortlisten(){
         prevSelection = item.options[item.selectedIndex].value;
     }
     chrome.storage.local.get("wortlisten", function(result)
-    {
+    {        
         let val;
         let optioncollection = "";
         if(result["wortlisten"] != null){
             for(val of result["wortlisten"]){
-                if(val.id == prevSelection){
-                    optioncollection += '<option value="' + val.id + '" selected="selected">' + val.name + '</option>';
-                }
-                else{
-                    optioncollection += '<option value="' + val.id + '">' + val.name + '</option>';
-                }
+                optioncollection += '<option value="' + val.id + '">' + val.name + '</option>';                
             }
             item.innerHTML = optioncollection;
+
+            if(prevSelection != null){
+                item.value = prevSelection;
+            }
+            else{
+                getServerData();
+            }
         }
     });
 };
@@ -105,6 +109,18 @@ function resetWortlisten(){
 //
 // dynamic eventlistener
 //
+
+// del btn of every entry
+function enableDelBtn(){    
+    document.querySelectorAll('.delBtn').forEach(function(item){
+        item.addEventListener('click', function(){            
+            let parent = item.parentNode.parentNode;
+            let wortlisteId = parent.getElementsByClassName('wortlisteId')[0].innerText;
+            let begriffId = parent.getElementsByClassName('id')[0].innerText;
+            delBegriffServer(begriffId, wortlisteId);
+        });
+    });
+};
 
 // save btn of the user input
 function addSpeicherListener(){
@@ -174,6 +190,28 @@ function doRequest(params, callback){
     request.send(params);
 };
 
+function delBegriffServer(begriffId, wortlisteId){
+    function sendDelCallback(request){        
+        if(request.readyState == 4){
+            if(request.status == 200){
+                getServerData();
+            }
+        }
+    }
+    function sendDel(apikey){
+        let params = 'k=' + escape(apikey) + '&task=delWord' + '&wortlisteId=' + wortlisteId + '&begriffId=' + begriffId;        
+        doRequest(params, sendDelCallback);
+    };
+    chrome.storage.sync.get("apikey", function(result){
+        if(result == null){
+            alert('Kein gültiger API Key.');
+        }
+        else{
+            sendDel(result["apikey"]);
+        }
+    });
+};
+
 // gets the server data per post-request
 function getServerData(){
     function getWortlisten(publickey){
@@ -183,7 +221,6 @@ function getServerData(){
     function getBegriffe(publickey){
         let dropdown =      document.getElementById('wortlisten');
         let params = 'k=' + escape(publickey);
-        console.log(dropdown.selectedIndex);
         if(dropdown.selectedIndex >= 0){
             params += '&task=selectedWords&wortlisteId=' + dropdown.options[dropdown.selectedIndex].value;
         }
@@ -236,7 +273,7 @@ function getItem(begriff, beschreibung, link, id, wortlisteId){
         }
     }
     return "<div class=\"begriffcontainer\">\
-                <p class=\"begriff\">" + begriff + "<input class=\"input editBtn\" type=\"image\" src=\"images/edit.png\"/></p>\
+                <p class=\"begriff\">" + begriff + "<input class=\"input editBtn\" type=\"image\" src=\"images/edit.png\"/><input class=\"input delBtn\" type=\"image\" src=\"images/cross.png\"/></p>\
                 <p class=\"beschreibung\">" + beschreibung + "</p>\
                 " + linkitem + "\
                 <p class=\"id\"\>" + id + "</p>\
@@ -282,15 +319,15 @@ function clearUserInputField(){
 // raw user input field
 function getInputView(id, wortlisteId){
     return "<p class=\"input\">Begriff:</p>\
-    <textarea class=\"input\" id=\"newBegriff\"></textarea>\
-    <p class=\"input\">Beschreibung:</p>\
-    <textarea class=\"input\" id=\"newBeschreibung\"></textarea>\
-    <p class=\"input\">Link:</p>\
-    <textarea class=\"input\" id=\"newLink\" ></textarea><br>\
-    <button class=\"input\" id=\"newSpeichern\">Speichern</button>\
-    <input class=\"input\" class=\"btn\" id=\"abbortBtn\" type=\"image\" src=\"images/cross.png\"/>\
-    <p class=\"id\" id=\"editId\"\>" + id + "</p>\
-    <p class=\"wortlisteId\" id=\"editWortlistenId\"\>" + wortlisteId + "</p>";
+            <textarea class=\"input\" id=\"newBegriff\"></textarea>\
+            <p class=\"input\">Beschreibung:</p>\
+            <textarea class=\"input\" id=\"newBeschreibung\"></textarea>\
+            <p class=\"input\">Link:</p>\
+            <textarea class=\"input\" id=\"newLink\" ></textarea><br>\
+            <button class=\"input\" id=\"newSpeichern\">Speichern</button>\
+            <input class=\"input\" class=\"btn\" id=\"abbortBtn\" type=\"image\" src=\"images/cross.png\"/>\
+            <p class=\"id\" id=\"editId\"\>" + id + "</p>\
+            <p class=\"wortlisteId\" id=\"editWortlistenId\"\>" + wortlisteId + "</p>";
 };
 
 // create input field
@@ -362,6 +399,7 @@ function begriffeCallback(request){
 
 // Get server data
 document.getElementById('refreshBtn').addEventListener("click", function(){
+    document.getElementById('searchtext').value = "";
     tryToSendLocalCache();
     getServerData();
 });
@@ -370,7 +408,6 @@ document.getElementById('refreshBtn').addEventListener("click", function(){
 window.addEventListener('load', function(){
     tryToSendLocalCache();
     getServerData();
-
 });
 
 // if user sets string into search field --> filter

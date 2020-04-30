@@ -5,7 +5,7 @@ body {
 }
 
 #table{
-    padding-top: 20px;
+    padding-top: 10px;
 }
 
 .begriffcontainer{
@@ -19,6 +19,9 @@ body {
 
 #anchor{
     margin: 0px;
+    margin-top: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 
 .begriff{
@@ -46,10 +49,11 @@ body {
     padding-top: 2px;
 }
 
-.editBtn{
+.editBtn, .delBtn{
     float: right;
     width: 15px;
     padding-top: 2px;
+    padding-left: 5px;
 }
 
 .id, .wortlisteId, #edit{
@@ -57,7 +61,7 @@ body {
 }
 
 textarea{
-    width: 100%;
+    width: 98%;
 }
 
 #wortlisten{

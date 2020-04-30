@@ -8,7 +8,7 @@
         $aut = new Autentifizierung();
         
         if($aut->handelLoginTrys($con) && isset($_POST['k']) && isset($_POST['task'])){
-            $userid = $aut->matchPublicKey($con, $_POST['k']);
+            $userid = $aut->matchPublicKey($con, $_POST['k']);            
             if($userid != null)
             {
                 http_response_code(200);
@@ -31,12 +31,17 @@
                     break;
                     case "newWord":                        
                         if(isset($_POST['begriff']) && isset($_POST['beschreibung']) && isset($_POST['wortlisteId'])){
-                            $Begriff->neuerBegriff($con);
+                            $Begriff->neuerBegriff($con, $userid);
                         }
-                    break;                    
+                    break;
                     case "editWord":
                         if(isset($_POST['begriff']) && isset($_POST['beschreibung']) && isset($_POST['wortlisteId']) && isset($_POST['begriffId'])){                
-                            $Begriff->editBegriff($con);
+                            $Begriff->editBegriff($con, $userid);
+                        }
+                    break;
+                    case "delWord":                        
+                        if(isset($_POST['wortlisteId']) && isset($_POST['begriffId'])){                
+                            $Begriff->delBegriff($con, $userid);
                         }
                     break;
                     case "allDef":
