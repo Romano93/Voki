@@ -26,15 +26,19 @@ class Autentifizierung{
     function matchPublicKey($con, $publickey){
         $publickey = htmlspecialchars($publickey);
         $publickey = $con->real_escape_string($publickey);
-        $sql = 'SELECT id FROM user WHERE publickey = ' . $publickey . ';';
+        $sql = 'SELECT id FROM user WHERE publickey = "' . $publickey . '";';
         $res = $con->query($sql);
-        if($res->num_rows == 1){
-            $row = $res->fetch_assoc();
-            $this->insertLogInfo($con, true);
-            return $row['id'];
-        }        
-        $this->insertLogInfo($con, false);
-        return null;
+        try {
+            if($res->num_rows == 1){
+                $row = $res->fetch_assoc();
+                $this->insertLogInfo($con, true);
+                return $row['id'];
+            }
+        }    
+        catch(Exception $e){
+            $this->insertLogInfo($con, false);
+            return null;
+        }            
     }
 
     function getClientInfo(){

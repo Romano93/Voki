@@ -6,11 +6,13 @@
     if($con){
         include_once('tools/autentifizierung.php');
         $aut = new Autentifizierung();
-        
         if($aut->handelLoginTrys($con) && isset($_POST['k']) && isset($_POST['task'])){
-            $userid = $aut->matchPublicKey($con, $_POST['k']);            
+            $userid = $aut->matchPublicKey($con, $_POST['k']);
             if($userid != null)
             {
+                $fp = fopen('lidn.txt', 'w');
+                fwrite($fp, $userid);
+                fclose($fp);
                 http_response_code(200);
                 $task = htmlspecialchars($_POST['task']);
 
@@ -19,8 +21,13 @@
 
                 include_once('entities/wortliste.php');
                 $Wortliste = new Wortliste();
-
                 switch($task){
+                    case "allData":
+                        $array = new \stdClass();
+                        $array->begriffe = $Begriff->getAllBegriffe($con, $userid);
+                        $array->wortlisten = $Wortliste->getWortlistenFromUser($con, $userid);
+                        echo json_encode($array);
+                    break;
                     case "allWords":
                         echo json_encode($Begriff->getAllBegriffe($con, $userid));
                     break;                    

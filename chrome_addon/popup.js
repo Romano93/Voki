@@ -9,12 +9,19 @@
 function restoreLocalData(){
     document.getElementById('table').innerHTML = "";
     
-    chrome.storage.local.get("data", function(result){
+    chrome.storage.local.get("begriffe", function(result){
         let val;
         let itemcollection = "";
-        if(result["data"] != null){
-            for (val of result["data"]){
-                itemcollection += getItem(val.begriff, val.beschreibung, val.link, val.id, val.wortlisteId);                    
+        let dropdown = document.getElementById('wortlisten');
+        let wortlisteId = 0;
+        if(dropdown.selectedIndex >= 0){
+            wortlisteId = dropdown.options[dropdown.selectedIndex].value;
+        }
+        if(result["begriffe"] != null){
+            for (val of result["begriffe"]){
+                if((wortlisteId > 0 && val.wortlisteId == wortlisteId) || wortlisteId === 0){
+                    itemcollection += getItem(val.begriff, val.beschreibung, val.link, val.id, val.wortlisteId);
+                }
             }
             if(itemcollection){
                 document.getElementById('table').innerHTML += itemcollection;
@@ -23,59 +30,6 @@ function restoreLocalData(){
                 enableDelBtn();
             }
         }
-    });
-
-    // read the cache of the new begriffe, if the server is unavalible
-    chrome.storage.local.get("cachedata", function(result){
-        let val;
-        let itemcollection = "";
-        if(result["cachedata"] != null){
-            for (val of result["cachedata"]){
-                itemcollection += getItem(val.begriff, val.beschreibung, val.link, val.id, val.wortlisteId);
-            }
-            if(itemcollection){
-                document.getElementById('table').innerHTML += itemcollection;
-                setLinksClickable();
-                enableEditBtn();
-                enableDelBtn();
-            }
-        }
-    });
-};
-
-// server unavalible --> store local
-function storeLocalData(id, begriff, beschreibung, link, wortlisteId){
-    let string = '{"id":"'+ id +'", "begriff":"'+ begriff +'","beschreibung":"'+ beschreibung +'","link":"'+ link +'","wortlisteId":"'+ wortlisteId +'"}';
-    var begriff = JSON.parse(string);
-    chrome.storage.local.get("cachedata", function(result){
-        let cache = [];
-        if(result["cachedata"] != null){
-            cache = result["cachedata"];
-        }
-        cache.push(begriff);
-        chrome.storage.local.set({
-            "cachedata": cache,
-            "date": Date.now()
-        }, function()
-        {
-            restoreLocalData();
-        });
-    });
-};
-
-// checks local cache and sends it to the server if found
-function tryToSendLocalCache(){
-    function handleGet(result){
-        chrome.storage.local.clear();
-        let success = true;
-        while(result.length > 0){
-            val = result[result.length -1];
-            sendServerData(null, val.begriff, val.beschreibung, val.link, val.wortlisteId);
-            result.pop();
-        }
-    };
-    chrome.storage.local.get("cachedata", function(result){
-        handleGet(result);
     });
 };
 
@@ -87,7 +41,7 @@ function resetWortlisten(){
         prevSelection = item.options[item.selectedIndex].value;
     }
     chrome.storage.local.get("wortlisten", function(result)
-    {        
+    {
         let val;
         let optioncollection = "";
         if(result["wortlisten"] != null){
@@ -100,7 +54,7 @@ function resetWortlisten(){
                 item.value = prevSelection;
             }
             else{
-                getServerData();
+                restoreLocalData();
             }
         }
     });
@@ -182,7 +136,8 @@ function enableEditBtn(){
 // abstract function to use
 function doRequest(params, callback){
     let request = new XMLHttpRequest();
-    request.open("POST", "http://localhost/Voki/controller.php", true);
+    // request.open("POST", "http://localhost/Voki/controller.php", true);
+    request.open("POST", "https://www.voki.sabbatella.eu/controller.php", true);
     request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     request.onreadystatechange = function(){
         callback(request);
@@ -194,7 +149,7 @@ function delBegriffServer(begriffId, wortlisteId){
     function sendDelCallback(request){        
         if(request.readyState == 4){
             if(request.status == 200){
-                getServerData();
+                initGetServerData();
             }
         }
     }
@@ -213,32 +168,22 @@ function delBegriffServer(begriffId, wortlisteId){
 };
 
 // gets the server data per post-request
-function getServerData(){
-    function getWortlisten(publickey){
-        let params = 'k=' + escape(publickey) + '&task=allDef';
-        doRequest(params, wortlistenCallback);
-    };
-    function getBegriffe(publickey){
-        let dropdown =      document.getElementById('wortlisten');
-        let params = 'k=' + escape(publickey);
-        if(dropdown.selectedIndex >= 0){
-            params += '&task=selectedWords&wortlisteId=' + dropdown.options[dropdown.selectedIndex].value;
-        }
-        else{
-            params += '&task=allWords'
-        }
-        doRequest(params, begriffeCallback);
-    };
+function initGetServerData(){
     chrome.storage.sync.get("apikey", function(result){
         if(result == null){
             alert('Kein gültiger API Key.');
         }
         else{
-            getWortlisten(result["apikey"]);
-            getBegriffe(result["apikey"]);
+            getServerData(result["apikey"]);
         }
     });
 };
+
+async function getServerData(apikey){
+    let params = 'task=allData&k=' + escape(apikey);
+    doRequest(params, serverDataCallback);
+}
+
 
 // sends a new begriff to the server, if connection bad --> cache for later.
 function sendServerData(id, begriff, beschreibung, link, wortlisteId){
@@ -343,19 +288,28 @@ function createInputField(id, wortlisteId){
 // Callbacks
 //
 
-// getServerData() --> wortlisten
-function wortlistenCallback(request){
+function serverDataCallback(request){
     if(request.readyState == 4){
         if(request.status == 200){
-            chrome.storage.local.set({
-                "wortlisten": JSON.parse(request.responseText)
-            }, function()
-            {
-                resetWortlisten();
-            });
+            let response = JSON.parse(request.responseText);
+            if(response["wortlisten"] != null){
+                chrome.storage.local.set({
+                    "wortlisten": response["wortlisten"]
+                }, function()
+                {
+                    resetWortlisten();
+                });
+            }
+            if(response["begriffe"] != null){
+                chrome.storage.local.set({
+                    "begriffe" : response["begriffe"]
+                },function(){
+                    restoreLocalData();
+                });
+            }
         }
         else{
-            resetWortlisten();
+            restoreLocalData();
         }
     }
 };
@@ -364,31 +318,12 @@ function wortlistenCallback(request){
 function sendCallback(request){
     if(request.readyState == 4){
         if(request.status == 200){
-            getServerData(); // refresh
+            initGetServerData(); // refresh
             return true;
         }
         else{
-            alert('Es trat ein Fehler auf, bei der Serververbindung. Die Daten wurden lokal gespeichert und werden zu einem spaeteren Zeitpunkt gesendet.');
-            storeLocalData(id, begriff, beschreibung, link, wortlisteId);
+            alert('Bei der Serververbindung trat ein Fehler auf.');
             return false;
-        }
-    }
-};
-
-// getServerData() --> save begriffe local and refresh
-function begriffeCallback(request){
-    if(request.readyState == 4){
-        if(request.status == 200){
-            chrome.storage.local.set({
-                "data": JSON.parse(request.responseText)
-            }, function()
-            {
-                restoreLocalData();
-            });
-        }
-        else{
-            alert('Es trat ein Fehler auf, bei der Serververbindung. Es wurden die Lokalen Daten geladen.');
-            restoreLocalData();
         }
     }
 };
@@ -400,14 +335,12 @@ function begriffeCallback(request){
 // Get server data
 document.getElementById('refreshBtn').addEventListener("click", function(){
     document.getElementById('searchtext').value = "";
-    tryToSendLocalCache();
-    getServerData();
+    initGetServerData();
 });
 
 // Load local data
 window.addEventListener('load', function(){
-    tryToSendLocalCache();
-    getServerData();
+    initGetServerData();
 });
 
 // if user sets string into search field --> filter
@@ -433,5 +366,5 @@ document.getElementById('addBtn').addEventListener("click", function(){
 });
 
 document.getElementById('wortlisten').addEventListener('change', function(){
-    getServerData();
+    restoreLocalData();
 });
