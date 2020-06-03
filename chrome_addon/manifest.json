@@ -5,9 +5,8 @@
     "permissions": [
       "declarativeContent", 
       "storage",
-      "http://localhost/Voki/",
-      "http://www.voki.sabbatella.eu/",
-      "http://www.voki.sabbatella.eu/"
+      "http://voki.sabbatella.eu/",
+      "https://voki.sabbatella.eu/"
     ],
     "background": {
         "scripts": ["background.js"],

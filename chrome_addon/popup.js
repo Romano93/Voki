@@ -12,6 +12,7 @@ function restoreLocalData(){
     chrome.storage.local.get("begriffe", function(result){
         let val;
         let itemcollection = "";
+        document.getElementById('table').innerHTML = "";
         let dropdown = document.getElementById('wortlisten');
         let wortlisteId = 0;
         if(dropdown.selectedIndex >= 0){
@@ -136,8 +137,7 @@ function enableEditBtn(){
 // abstract function to use
 function doRequest(params, callback){
     let request = new XMLHttpRequest();
-    // request.open("POST", "http://localhost/Voki/controller.php", true);
-    request.open("POST", "https://www.voki.sabbatella.eu/controller.php", true);
+    request.open("POST", "https://voki.sabbatella.eu/controller.php", true);
     request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     request.onreadystatechange = function(){
         callback(request);
@@ -146,7 +146,7 @@ function doRequest(params, callback){
 };
 
 function delBegriffServer(begriffId, wortlisteId){
-    function sendDelCallback(request){        
+    function sendDelCallback(request){
         if(request.readyState == 4){
             if(request.status == 200){
                 initGetServerData();
@@ -291,6 +291,7 @@ function createInputField(id, wortlisteId){
 function serverDataCallback(request){
     if(request.readyState == 4){
         if(request.status == 200){
+            chrome.storage.local.clear();
             let response = JSON.parse(request.responseText);
             if(response["wortlisten"] != null){
                 chrome.storage.local.set({
