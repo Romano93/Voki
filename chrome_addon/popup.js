@@ -137,7 +137,7 @@ function enableEditBtn(){
 // abstract function to use
 function doRequest(params, callback){
     let request = new XMLHttpRequest();
-    request.open("POST", "https://voki.sabbatella.eu/controller.php", true);
+    request.open("POST", "", true);
     request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     request.onreadystatechange = function(){
         callback(request);
