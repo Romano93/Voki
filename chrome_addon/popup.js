@@ -8,7 +8,6 @@
 // restores the data localy
 function restoreLocalData(){
     document.getElementById('table').innerHTML = "";
-    
     chrome.storage.local.get("begriffe", function(result){
         let val;
         let itemcollection = "";
@@ -35,30 +34,39 @@ function restoreLocalData(){
 };
 
 // handel local wortlisten
-function resetWortlisten(){
-    var item = document.getElementById('wortlisten');
-    var prevSelection = null;
-    if(item.selectedIndex >= 0){
-        prevSelection = item.options[item.selectedIndex].value;
-    }
-    chrome.storage.local.get("wortlisten", function(result)
-    {
-        let val;
-        let optioncollection = "";
-        if(result["wortlisten"] != null){
-            for(val of result["wortlisten"]){
-                optioncollection += '<option value="' + val.id + '">' + val.name + '</option>';                
-            }
-            item.innerHTML = optioncollection;
-
-            if(prevSelection != null){
-                item.value = prevSelection;
-            }
-            else{
-                restoreLocalData();
-            }
-        }
+async function resetWortlisten(){
+    let promiseOptionId = new Promise(function(resolve, reject){
+        chrome.storage.sync.get("wortlisteOptionId", function(result){
+            resolve(result["wortlisteOptionId"]);
+        });
     });
+
+    let promiseWortlisten = new Promise(function(resolve, reject){
+        chrome.storage.local.get("wortlisten", function(result){
+            resolve(result["wortlisten"]);
+        });
+    });
+    let optionId = await promiseOptionId;
+    let wortlisten = await promiseWortlisten;
+
+    if(optionId != "" && optionId !== undefined){
+        var prevSelection = optionId;
+    }
+
+    var item = document.getElementById('wortlisten');
+    let val;
+    let optioncollection = "";
+    if(wortlisten != null){
+        for(val of wortlisten){
+            optioncollection += '<option value="' + val.id + '">' + val.name + '</option>';                
+        }
+        item.innerHTML = optioncollection;
+
+        if(prevSelection != null){
+            item.selectedIndex = prevSelection;
+        }
+        restoreLocalData();                
+    }    
 };
 
 //
@@ -80,7 +88,7 @@ function enableDelBtn(){
 // save btn of the user input
 function addSpeicherListener(){
     document.getElementById('newSpeichern').addEventListener("click", function(){
-        if(validateUserInput()){     
+        if(validateUserInput()){
             let begriff =       document.getElementById("newBegriff").value;
             let beschreibung =  document.getElementById("newBeschreibung").value;
             let link =          document.getElementById("newLink").value;
@@ -137,7 +145,7 @@ function enableEditBtn(){
 // abstract function to use
 function doRequest(params, callback){
     let request = new XMLHttpRequest();
-    request.open("POST", "https://voki.sabbatella.eu/controller.php", true);
+    request.open("POST", "", true);
     request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     request.onreadystatechange = function(){
         callback(request);
@@ -291,23 +299,24 @@ function createInputField(id, wortlisteId){
 function serverDataCallback(request){
     if(request.readyState == 4){
         if(request.status == 200){
-            chrome.storage.local.clear();
-            let response = JSON.parse(request.responseText);
-            if(response["wortlisten"] != null){
-                chrome.storage.local.set({
-                    "wortlisten": response["wortlisten"]
-                }, function()
-                {
-                    resetWortlisten();
-                });
-            }
-            if(response["begriffe"] != null){
-                chrome.storage.local.set({
-                    "begriffe" : response["begriffe"]
-                },function(){
-                    restoreLocalData();
-                });
-            }
+            chrome.storage.local.clear(function(){
+                let response = JSON.parse(request.responseText);
+                if(response["wortlisten"] != null){
+                    chrome.storage.local.set({
+                        "wortlisten": response["wortlisten"]
+                    }, function()
+                    {
+                        resetWortlisten();
+                    });
+                }
+                if(response["begriffe"] != null){
+                    chrome.storage.local.set({
+                        "begriffe" : response["begriffe"]
+                    },function(){
+                        restoreLocalData();
+                    });
+                }
+            });
         }
         else{
             restoreLocalData();
@@ -367,5 +376,10 @@ document.getElementById('addBtn').addEventListener("click", function(){
 });
 
 document.getElementById('wortlisten').addEventListener('change', function(){
-    restoreLocalData();
+    chrome.storage.sync.set({
+        "wortlisteOptionId": document.getElementById('wortlisten').selectedIndex
+    }, function()
+    {
+        restoreLocalData();
+    });
 });
