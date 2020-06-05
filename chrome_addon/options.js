@@ -6,6 +6,11 @@ document.getElementById('save').addEventListener("click", function(){
 
 document.addEventListener("DOMContentLoaded", function(){
     chrome.storage.sync.get("apikey", function(result){
-        document.getElementById('publickey').value = result["apikey"];
+        if(result["apikey"] != undefined){
+            document.getElementById('publickey').value = result["apikey"];
+            }
+        else{
+            document.getElementById('publickey').value = ""
+        }
     })
 });
