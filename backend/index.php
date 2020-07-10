@@ -6,6 +6,9 @@
   $db = new DbConnection();
   $con = $db->getConnection();
 
+  include_once("localisation.php");
+  $loc = new Localisation();
+  
   include_once('tools/autentifizierung.php');
   $aut = new Autentifizierung();
   // Login
@@ -31,37 +34,37 @@
 <!DOCTYPE html>
 <html lang="de">
   <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" href="stylesheet.css">
     <title>Voki</title>
   </head>
   <body>
-    <div class="center">
-      <form method="POST">
-        <label for="mail">
+    <div id="center">
+      <div class="form">
+        <form method="POST">
+          <label for="mail">
+          <?php
+            echo $loc->getLocalisationFromSession('LOGIN_MAIL');
+          ?>
+          </label>
+          <input type="text" id="mail" name="mail"><br><br>
+          <label for="passwort">
+          <?php
+            echo $loc->getLocalisationFromSession('LOGIN_PASSWORD');
+          ?>
+          </label>
+          <input type="password" id="passwort" name="passwort"><br><br>
+          <input class="submit" type="submit" value="Login">
+        </form>
+        <p><a href="register.php">
         <?php
-          include_once("localisation.php");
-          $loc = new Localisation();
-          echo $loc->getLocalisationFromSession('LOGIN_MAIL');
-        ?>
-        </label>
-        <input type="text" id="mail" name="mail"><br><br>
-        <label for="passwort">
-        <?php        
-          include_once("localisation.php");
-          $loc = new Localisation();
-          echo $loc->getLocalisationFromSession('LOGIN_PASSWORD');
-        ?>
-        </label>
-        <input type="password" id="passwort" name="passwort"><br><br>
-        <input type="submit" value="Login">
-      </form>
-      <p><a href="register.php">
-      <?php
-          include_once("localisation.php");
-          $loc = new Localisation();
-          echo $loc->getLocalisationFromSession('LOGIN_REGISTER');
-        ?>
-      </a></p>
+            echo $loc->getLocalisationFromSession('LOGIN_REGISTER');
+          ?>
+        </a></p>
+      </div>
     </div>
+    <section id="footer">
+        <?php include('footer.php'); ?>
+    </sction>
   </body>
 </html>

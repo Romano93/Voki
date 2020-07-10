@@ -6,18 +6,13 @@ class User{
         $nachname = $con->real_escape_string(htmlspecialchars($_POST["nachname"]));        
         $passwort = $con->real_escape_string(htmlspecialchars($_POST["passwort"]));
         $passwortnochmals = $con->real_escape_string(htmlspecialchars($_POST["passwortnochmals"]));
-        if($passwort == $passwortnochmals){
+        if($passwort == $passwortnochmals && $this->isUniqueMail($con, $mail)){            
             $passwort = password_hash($passwort, PASSWORD_DEFAULT); // https://www.php.net/manual/en/function.password-hash.php
             $passwortnochmals = password_hash($passwortnochmals, PASSWORD_DEFAULT);
             $id = $this->getUniqueUuid($con);
             $sql = "INSERT INTO user (publickey, mail, nachname, vorname, passwort) VALUES ('". $id ."', '". $mail ."', '". $nachname ."', '". $vorname ."', '". $passwort ."');";
             $con->query($sql);
-            $sql = "SELECT LAST_INSERT_ID();";
-            $res = $con->query($sql);
-            $row = mysqli_fetch_array($res);
-            echo "id: " . $con->mysqli_insert_id();
-            // echo $_SESSION['userid'];
-            return true;
+            return $con->insert_id; 
         }
         return false;
     }
@@ -45,5 +40,13 @@ class User{
         }
         return $id;
     }    
+    function isUniqueMail($con, $mail){
+        $sql = 'SELECT id FROM user WHERE mail = "' . $mail . '";';
+        $res = $con->query($sql);
+        if($res->num_rows == 0){
+            return true;
+        }
+        return false;
+    }
 }
 ?>

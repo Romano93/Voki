@@ -1,19 +1,25 @@
 body {
-    width:300px;
+    width:98%;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 12px;
+    margin-bottom:50px;
 }
 
 #table{
     padding-top: 10px;
 }
 
-#wortlistencontainer{    
-    margin-bottom: 2px;  
-    margin-top: 20px;
+#navbar{
+    margin-top: 20px;  
+    margin-bottom: 20px;
 }
 
-.begriffcontainer{
+#nav{
+    width: 50%;
+    margin: 0 auto;
+}
+
+.begriffcontainer, .wortlistencontainer{
     border: 1px solid gray;
     margin-bottom: 2px;
     padding-left: 10px;
@@ -29,7 +35,7 @@ body {
     padding-bottom: 5px;
 }
 
-.begriff{
+.begriff, .wortliste{
     font-weight: bold;
     font-size: 13px;
     margin: 0px;
@@ -50,7 +56,7 @@ body {
     padding-top: 2px;
 }
 
-.editBtn, .delBtn{
+.editBtn, .delBtn, #refreshBtn, #addBtn{
     float: right;
     width: 15px;
     padding-top: 2px;
@@ -71,4 +77,54 @@ textarea{
 
 img{
     cursor: pointer;
+}
+
+#workplace{
+    width: 300px;
+    margin: 0 auto;
+}
+
+#center{
+    margin-top: 150px;
+}
+
+.form{
+    height: 100%;
+    width: 20%;    
+    margin: 0 auto;
+    background-color: whitesmoke;
+    padding: 50px;
+    box-sizing: border-box;
+    border-radius: 15px 15px 15px 15px;
+}
+
+input{
+    width: 250px;
+}
+
+label {
+    float: left;
+}
+
+.submit {
+    width: 75px;
+    margin: 0;
+    margin-left: 100px;
+}
+
+#logout{
+    display: none;
+}
+
+#footer{
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    right: 10;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    height: 20px;
+    background-color: lightgrey;
+    text-align: center;
 }
