@@ -17,6 +17,11 @@ body {
 #nav{
     width: 50%;
     margin: 0 auto;
+    text-align: center;
+}
+
+#toolbar{
+    padding-bottom: 10px;
 }
 
 .begriffcontainer, .wortlistencontainer{
