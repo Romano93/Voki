@@ -15,7 +15,7 @@ function getInputView(){
     res = res +     '<textarea name="formLink" id="formLink" type="text"></textarea><br>';
     res = res +     '<input id="formBegriffId" name="formBegriffId" style="display: none;" type="text"/><br>'; // hidden
     res = res +     '<input name="formWortlisteId" id="formWortlisteId" style="display: none;" type="text"/><br>'; // hidden
-    res = res +     '<input type="submit" value="' + submitLabel +'">';
+    res = res +     '<input class="submit" type="submit" value="' + submitLabel +'">';
     res = res +     '<img id="abbortBtn" src="images/cross.png">';
     res = res + '</form>';
     return res;

@@ -65,7 +65,7 @@
           ?>
           </label>
           <input type="password" id="passwortnochmals" name="passwortnochmals"><br><br>
-          <input type="submit" value="<?php echo $loc->getLocalisationFromSession('REGISTER_BUTTON'); ?>">
+          <input class="submit" type="submit" value="<?php echo $loc->getLocalisationFromSession('REGISTER_BUTTON'); ?>">
         </form>
         <p><a href="index.php">Login</a></p>
       </div>

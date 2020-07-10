@@ -57,7 +57,7 @@ class Wortliste{
     }
 
     function accessAllowed($con, $userId, $wortlisteId){
-        $sql = 'SELECT id FROM userwortlisten WHERE userId = ' . $userId.' AND wortlisteId = '. $wortlisteId .' AND active = 1';
+        $sql = 'SELECT id FROM userwortlisten WHERE userId = ' . $userId.' AND wortlisteId = '. $wortlisteId .' AND active = 1';        
         $res = $con->query($sql);
         if($res->num_rows > 0){
             return true;

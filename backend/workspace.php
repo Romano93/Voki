@@ -34,8 +34,8 @@
     }
     if(isset($_POST['formWortlisteId'])){
         $wortlisteId = $con->real_escape_string(htmlspecialchars($_POST['formWortlisteId']));
-    }
-    
+    }    
+
     // working
     if(isset($_POST['formDel']) && isset($_POST['formBegriffId']) && isset($_POST['formWortlisteId'])){ // delete
         $Begriff->delBegriff($con, $_SESSION['userid'], $begriffId, $wortlisteId);
@@ -45,6 +45,7 @@
             $Begriff->editBegriff($con, $_SESSION['userid'], $begriff, $beschreibung, $link, $begriffId, $wortlisteId);
         }
         else{ // new
+            echo 'new';
             $Begriff->neuerBegriff($con, $_SESSION['userid'], $begriff, $beschreibung, $link, $wortlisteId);
         }
     }
@@ -68,13 +69,15 @@
                     $selected = 0;
                     $wortlisten = $Wortliste->getWortlistenFromUser($con, $_SESSION['userid']);
                     $wortlistenHtmlElement = '<select id="wortlisten">';
-                    if(count($wortlisten) > 0){
-                        foreach ($wortlisten as $wortliste){
-                            if(isset($_POST['formWortlisteId']) && $wortliste['id'] == $wortlisteId){
-                                $wortlistenHtmlElement = $wortlistenHtmlElement . '<option value="'. $wortliste['id'] .'" selected="selected">'. $wortliste['name'] .'</option>';
-                            }
-                            else{
-                                $wortlistenHtmlElement = $wortlistenHtmlElement . '<option value="'. $wortliste['id'] .'">'. $wortliste['name'] .'</option>';
+                    if($wortlisten != "") {
+                        if(count($wortlisten) > 0){
+                            foreach ($wortlisten as $wortliste){
+                                if(isset($_POST['formWortlisteId']) && $wortliste['id'] == $wortlisteId){
+                                    $wortlistenHtmlElement = $wortlistenHtmlElement . '<option value="'. $wortliste['id'] .'" selected="selected">'. $wortliste['name'] .'</option>';
+                                }
+                                else{
+                                    $wortlistenHtmlElement = $wortlistenHtmlElement . '<option value="'. $wortliste['id'] .'">'. $wortliste['name'] .'</option>';
+                                }
                             }
                         }
                     }
@@ -100,20 +103,25 @@
                     $beschreibungLoc = $loc->getLocalisationFromSession('WORKSPACE_DESC');
                     $linkLoc = $loc->getLocalisationFromSession('WORKSPACE_LINK');
                     // Begriffe ausgeben
+                    $begriffeHtmlElement = "";
                     $begriffe = $Begriff->getAllBegriffe($con, $_SESSION['userid']);
-                    if(count($begriffe) > 0){
-                        $begriffeHtmlElement = "";
-                        foreach ($begriffe as $begriff){
-                            $begriffeHtmlElement = $begriffeHtmlElement . '<div class="begriffcontainer">';
-                            $begriffeHtmlElement = $begriffeHtmlElement .   '<p class="begriff">' . $begriff['begriff'] . '<img class="editBtn" src="images/edit.png"><img class="delBtn" src="images/cross.png"/></p>';
-                            $begriffeHtmlElement = $begriffeHtmlElement .   '<p class="beschreibung">' . $begriff['beschreibung'] . '</p>';
-                            $begriffeHtmlElement = $begriffeHtmlElement .   '<a class="link" href="' . $begriff['link'] . '">' . $begriff['link'] . '</a>';
-                            $begriffeHtmlElement = $begriffeHtmlElement .   '<p class="id">' . $begriff['id'] . '</p>';
-                            $begriffeHtmlElement = $begriffeHtmlElement .   '<p class="wortlisteId">' . $begriff['wortlisteId'] . '</p>';                        
-                            $begriffeHtmlElement = $begriffeHtmlElement . '</div>';
+                    if($begriffe != ""){
+                        if(count($begriffe) > 0){
+                            $begriffeHtmlElement = "";
+                            foreach ($begriffe as $begriff){
+                                $begriffeHtmlElement = $begriffeHtmlElement . '<div class="begriffcontainer">';
+                                $begriffeHtmlElement = $begriffeHtmlElement .   '<p class="begriff">' . $begriff['begriff'] . '<img class="editBtn" src="images/edit.png"><img class="delBtn" src="images/cross.png"/></p>';
+                                $begriffeHtmlElement = $begriffeHtmlElement .   '<p class="beschreibung">' . $begriff['beschreibung'] . '</p>';
+                                $begriffeHtmlElement = $begriffeHtmlElement .   '<a class="link" href="' . $begriff['link'] . '">' . $begriff['link'] . '</a>';
+                                $begriffeHtmlElement = $begriffeHtmlElement .   '<p class="id">' . $begriff['id'] . '</p>';
+                                $begriffeHtmlElement = $begriffeHtmlElement .   '<p class="wortlisteId">' . $begriff['wortlisteId'] . '</p>';                        
+                                $begriffeHtmlElement = $begriffeHtmlElement . '</div>';
+                            }
                         }
                     }
-                    echo $begriffeHtmlElement;
+                    if($begriffeHtmlElement != ""){
+                        echo $begriffeHtmlElement;
+                    }
                 }
             ?>
         </div>

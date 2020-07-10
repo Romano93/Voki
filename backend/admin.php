@@ -65,13 +65,15 @@
             <?php
                 $wortlisten = $Wortliste->getWortlistenFromUser($con, $_SESSION['userid']);
                 $wortlistenHtmlElements = '';
-                foreach($wortlisten as $wortliste){
-                    $wortlistenHtmlElements = $wortlistenHtmlElements . '<div class="wortlistencontainer">';
-                    $wortlistenHtmlElements = $wortlistenHtmlElements .     '<p class="wortliste">' . $wortliste['name'] . '<img class="editBtn" src="images/edit.png"><img class="delBtn" src="images/cross.png"/></p>';
-                    $wortlistenHtmlElements = $wortlistenHtmlElements .     '<p class="beschreibung">' . $wortliste['beschreibung'] . '</p>';
-                    $wortlistenHtmlElements = $wortlistenHtmlElements .     '<p class="wortlisteId">' . $wortliste['id'] . '</p>';
-                    $wortlistenHtmlElements = $wortlistenHtmlElements . '</div>';
-                }            
+                if($wortlisten != ""){
+                    foreach($wortlisten as $wortliste){
+                        $wortlistenHtmlElements = $wortlistenHtmlElements . '<div class="wortlistencontainer">';
+                        $wortlistenHtmlElements = $wortlistenHtmlElements .     '<p class="wortliste">' . $wortliste['name'] . '<img class="editBtn" src="images/edit.png"><img class="delBtn" src="images/cross.png"/></p>';
+                        $wortlistenHtmlElements = $wortlistenHtmlElements .     '<p class="beschreibung">' . $wortliste['beschreibung'] . '</p>';
+                        $wortlistenHtmlElements = $wortlistenHtmlElements .     '<p class="wortlisteId">' . $wortliste['id'] . '</p>';
+                        $wortlistenHtmlElements = $wortlistenHtmlElements . '</div>';
+                    }
+                } 
                 echo $wortlistenHtmlElements;
             ?>
         </div>
