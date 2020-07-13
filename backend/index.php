@@ -40,6 +40,13 @@
   </head>
   <body>
     <div id="center">
+    <div class="titel">
+      <h1>
+      <?php
+            echo $loc->getLocalisationFromSession('LOGIN_TITEL');
+      ?>
+      </h1>
+    </div>
       <div class="form">
         <form method="POST">
           <label for="mail">

@@ -34,19 +34,19 @@
           <?php
             echo $loc->getLocalisationFromSession('REGISTER_FIRSTNAME');
           ?>
-          </label>
+          </label><br>
           <input type="text" id="vorname" name="vorname"><br><br>
           <label for="nachname">
           <?php
             echo $loc->getLocalisationFromSession('REGISTER_SURNAME');
           ?>
-          </label>
+          </label><br>
           <input type="text" id="nachname" name="nachname"><br><br>
           <label for="mail">
           <?php
             echo $loc->getLocalisationFromSession('REGISTER_MAIL');
           ?>
-          </label>
+          </label><br>
           <input type="text" id="mail" name="mail"><br><br>
           <?php
             if(!isset($_SESSION['userid']) && isset($_POST["mail"])){          
@@ -57,13 +57,13 @@
           <?php
             echo $loc->getLocalisationFromSession('REGISTER_PASSWORD');
           ?>
-          </label>
+          </label><br>
           <input type="password" id="passwort" name="passwort"><br><br>
           <label for="passwortnochmals">
           <?php
             echo $loc->getLocalisationFromSession('REGISTER_PASSWORD_AGAIN');
           ?>
-          </label>
+          </label><br>
           <input type="password" id="passwortnochmals" name="passwortnochmals"><br><br>
           <input class="submit" type="submit" value="<?php echo $loc->getLocalisationFromSession('REGISTER_BUTTON'); ?>">
         </form>
