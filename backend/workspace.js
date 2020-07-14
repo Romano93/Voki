@@ -14,7 +14,7 @@ function getInputView(){
     res = res +     '<label>' + linkLabel + '</label><br>';
     res = res +     '<textarea name="formLink" id="formLink" type="text"></textarea><br>';
     res = res +     '<input id="formBegriffId" name="formBegriffId" style="display: none;" type="text"/><br>'; // hidden
-    res = res +     '<input name="formWortlisteId" id="formWortlisteId" style="display: none;" type="text"/><br>'; // hidden
+    res = res +     '<input name="formWortlisteId" id="formWortlisteId" style="display: none;" type="text"/>'; // hidden
     res = res +     '<input class="submit" type="submit" value="' + submitLabel +'">';
     res = res +     '<img id="abbortBtn" src="images/cross.png">';
     res = res + '</form>';
@@ -90,6 +90,9 @@ document.querySelectorAll('.editBtn').forEach(function(item){
         let begriff = begriffcontainer.getElementsByClassName('begriff')[0].textContent;        
         let beschreibung = begriffcontainer.getElementsByClassName('beschreibung')[0].textContent;
         let link = begriffcontainer.getElementsByClassName('link')[0].getAttribute('href');
+        if(link == null){
+            link = begriffcontainer.getElementsByClassName('link')[0].innerText;
+        }
         let id = begriffcontainer.getElementsByClassName('id')[0].textContent;
         // View erstellen
         document.getElementById('inputcontainer').innerHTML = getInputView();

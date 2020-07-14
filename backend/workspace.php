@@ -45,7 +45,6 @@
             $Begriff->editBegriff($con, $_SESSION['userid'], $begriff, $beschreibung, $link, $begriffId, $wortlisteId);
         }
         else{ // new
-            echo 'new';
             $Begriff->neuerBegriff($con, $_SESSION['userid'], $begriff, $beschreibung, $link, $wortlisteId);
         }
     }
@@ -112,7 +111,12 @@
                                 $begriffeHtmlElement = $begriffeHtmlElement . '<div class="begriffcontainer">';
                                 $begriffeHtmlElement = $begriffeHtmlElement .   '<p class="begriff">' . $begriff['begriff'] . '<img class="editBtn" src="images/edit.png"><img class="delBtn" src="images/cross.png"/></p>';
                                 $begriffeHtmlElement = $begriffeHtmlElement .   '<p class="beschreibung">' . $begriff['beschreibung'] . '</p>';
-                                $begriffeHtmlElement = $begriffeHtmlElement .   '<a class="link" href="' . $begriff['link'] . '">' . $begriff['link'] . '</a>';
+                                if(filter_var($begriff['link'], FILTER_VALIDATE_URL)){
+                                    $begriffeHtmlElement = $begriffeHtmlElement .   '<a class="link" href="' . $begriff['link'] . '">' . $begriff['link'] . '</a>';
+                                }
+                                else{
+                                    $begriffeHtmlElement = $begriffeHtmlElement .   '<p class="link href="' . $begriff['link'] . '">' . $begriff['link'] . '</p>';
+                                }
                                 $begriffeHtmlElement = $begriffeHtmlElement .   '<p class="id">' . $begriff['id'] . '</p>';
                                 $begriffeHtmlElement = $begriffeHtmlElement .   '<p class="wortlisteId">' . $begriff['wortlisteId'] . '</p>';                        
                                 $begriffeHtmlElement = $begriffeHtmlElement . '</div>';
