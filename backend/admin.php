@@ -55,6 +55,9 @@
   <body>
       <div id="workplace">
         <div id="navbar"><?php include('navbar.php'); ?></div>
+        <div id="titel">
+            <h2><?php echo $loc->getLocalisationFromSession('ADMIN_TITEL'); ?></h2>
+        </div>
         <div id="toolbar">
             <input id="searchtext" type="text">
             <img id="refreshBtn" src="images/refresh.png"/>

@@ -11,7 +11,7 @@ function getInputView(){
     res = res +     '<label>' + beschreibungLabel +'</label><br>';
     res = res +     '<textarea name="formBeschreibung" id="formBeschreibung" type="text"></textarea><br>';
     res = res +     '<input name="formWortlisteId" id="formWortlisteId" style="display: none;" type="text"/><br>'; // hidden
-    res = res +     '<input class="submit" type="submit" value="' + submitLabel +'">';
+    res = res +     '<input id="formSubmit" class="submit" type="submit" value="' + submitLabel +'">';
     res = res +     '<img id="abbortBtn" src="images/cross.png">';
     res = res + '</form>';
     return res;
@@ -39,11 +39,23 @@ function resetUserInput(){
 };
 
 function insertUserInputField(){
-    console.log(getInputView());
     document.getElementById('inputcontainer').innerHTML = getInputView();
+    addInputviewEventlisteners();
+};
+
+function addInputviewEventlisteners(){
     document.getElementById('abbortBtn').addEventListener('click', function(){
         resetUserInput();
     });
+    document.getElementById('formWortliste').addEventListener('input', function(){
+        if(document.getElementById('formWortliste').value.length > 0){
+            document.getElementById('formSubmit').disabled = false;
+        }
+        else{
+            document.getElementById('formSubmit').disabled = true;
+        }
+    });
+    document.getElementById('formSubmit').disabled = true;
 };
 
 //
@@ -61,11 +73,7 @@ document.querySelectorAll('.editBtn').forEach(function(item){
         insertUserInputField();
         document.getElementById('formWortliste').value = wortliste;
         document.getElementById('formBeschreibung').value = beschreibung;
-        document.getElementById('formWortlisteId').value = wortlisteId;
-        // Listeners registrieren
-        document.getElementById('abbortBtn').addEventListener('click', function(){
-            resetUserInput();
-        });
+        document.getElementById('formWortlisteId').value = wortlisteId;        
     });
 });
 

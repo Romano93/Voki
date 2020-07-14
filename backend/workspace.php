@@ -56,9 +56,12 @@
     <link rel="stylesheet" href="stylesheet.css">
     <title>Voki</title>
   </head>
-  <body>
-      <div id="workplace">
+  <body>    
+    <div id="workplace">    
         <div id="navbar"><?php include('navbar.php'); ?></div>
+        <div id="titel">
+            <h2><?php echo $loc->getLocalisationFromSession('WORKSPACE_TITEL'); ?></h2>
+        </div>
         <div id="wortlistencontainer">
             <?php
                 if(isset($_SESSION['userid'])){
@@ -84,13 +87,13 @@
                     echo $wortlistenHtmlElement;
                 }
             ?>
-        </div>
+        </div>        
         <div id="toolbar">        
             <input id="searchtext" type="text">
             <img id="refreshBtn" src="images/refresh.png"/>
             <img id="addBtn" src="images/add.png"/>
         </div>
-        <div id="inputcontainer"></div>
+        <div id="inputcontainer"></div>        
         <div id="datacontainer">
             <?php
                 if(isset($_SESSION['userid'])){
@@ -135,7 +138,9 @@
                 echo '<p id="formLocationBegriff">' . $begriffLoc . '</p>';
                 echo '<p id="formLocationBeschreibung">' . $beschreibungLoc . '</p>';
                 echo '<p id="formLocationLink">' . $linkLoc . '</p>';
-                echo '<p id="formLocationSubmit">' . $loc->getLocalisationFromSession('WORKSPACE_SUBMIT') . '</p>';            
+                echo '<p id="formLocationSubmit">' . $loc->getLocalisationFromSession('WORKSPACE_SUBMIT') . '</p>';   
+                echo '<p id="formErrorWordlist">' . $loc->getLocalisationFromSession('WORKSPACE_NO_WORDLIST') . '</p>';
+                echo '<p id="formErrorTerm">' . $loc->getLocalisationFromSession('WORKSPACE_NO_TERM') . '</p>';
             ?>
         </div>
     </div>
