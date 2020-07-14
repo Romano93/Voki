@@ -147,3 +147,12 @@ label {
     background-color: lightgrey;
     text-align: center;
 }
+
+.error{
+    color: red;
+    text-align: center;
+}
+
+#titel{
+    text-align: center;
+}
